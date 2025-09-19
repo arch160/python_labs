@@ -1,4 +1,6 @@
-an = input('Фамилия:')
-sn = input('Имя:')
-bn = input('Отчество:')
-print('ФИО:', an, sn, bn, 'Инициалы:', f'{an[0]}{sn[0]}{bn[0]} Длина:', len(an)+len(bn)+len(sn)+2 )
+fio = input('ФИО:').strip()
+a = fio.split()
+ini = ''.join(i[0] for i in a)
+fioo = ' '.join(i for i in a)
+print('ФИО:', fioo, 'Инициалы:', ini, 'Длина:', len(fioo)) 
+

@@ -1,14 +1,15 @@
 def flatten(mat: list[list | tuple]) -> list:
-   if not mat:
-      return [] 
-   
-   row = len(mat[0])
-   for row1 in mat:
-    if len(row1) != row:
-         return 'ValueError'
     res = []
-    for row1 in mat:
-        res.extend(row1)
+    for r in mat:
+        if not isinstance(r, (list, tuple)):
+            return 'TypeError'
+        res.extend(r)
     return res
 t = [[1, 2], [3, 4]]
+a = [[1, 2], (3, 4, 5)]
+b = [[1], [], [2, 3]]
+c = [[1, 2], "ab"]
 print(flatten(t))
+print(flatten(a))
+print(flatten(b))
+print(flatten(c))

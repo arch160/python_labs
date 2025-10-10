@@ -19,6 +19,14 @@
 # Лабораторная работа № 2
 
 ## Задание 1
+```python
+def min_max(nums: list[float | int]) -> tuple[float | int, float | int]:
+    if not nums:
+        return 'ValueError'
+    return (min(nums), max(nums))
+t = [3, -1, 5, 5, 0]
+print(min_max(t))
+```
 ![min_max](./images/lab02/1.1_arrays.png)
 ![unique_sorted](./images/lab02/1.2_arrays.png)
 ![flatten](./images/lab02/1.3_arrays.png)

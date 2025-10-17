@@ -174,3 +174,140 @@ print(format_record(d))
 ```
 
 ![Записи](./images/lab02/typles.png)
+
+
+# Лабораторная работа № 3
+
+## Задание 1
+
+### Normalize
+
+```python
+def normalize(text: str, *, casefold: bool = True, yo2e: bool = True) -> str:
+    if yo2e:
+        text = text.replace('ё', 'е').replace('Ё', 'Е')
+    if casefold:
+        text = text.casefold()
+    text = ' '.join(text.split())
+    text = text.strip()
+    return text
+a = 'ПрИвЕт\nМИр\t'
+b = "ёжик, Ёлка"
+c = "Hello\r\nWorld"
+d = "  двойные   пробелы  "
+print(normalize(a))
+print(normalize(b))
+print(normalize(c))
+print(normalize(d))
+```
+![normalize](./images/lab03/1.1_normalize.png)
+
+### Tokenize
+
+```python
+import re
+
+def tokenize(text: str) -> list[str]:
+    t = r'[\w]+(?:-[\w]+)*'
+    l = re.findall(t, text, re.UNICODE)
+    return l
+
+a = "привет мир"
+b = "hello,world!!!"
+c = "по-настоящему круто"
+d = "2025 год"
+e = "emoji 😀 не слово"
+print(tokenize(a))
+print(tokenize(b))
+print(tokenize(c))
+print(tokenize(d))
+print(tokenize(e))
+```
+
+![tokenize](./images/lab03/1.2_tokenize.png)
+
+### Count_freq + top_n
+```python
+def count_freq(tokens: list[str]) -> dict[str, int]:
+    freq = {}
+    for i in tokens:
+        if i in freq:
+            freq[i] += 1
+        else:
+            freq[i] = 1
+    return freq
+
+def top_n(freq: dict[str, int], n: int = 5) -> list[tuple[str, int]]:
+    items = []
+    for word in freq:
+        count = freq[word]
+        items.append((word, count))
+    items.sort(key=lambda i: (-i[1], i[0]))
+    return items[:n]
+
+
+a = ["a","b","a","c","b","a"]
+b = ["bb","aa","bb","aa","cc"]
+print(count_freq(a))
+print(count_freq(b))
+print(top_n(count_freq(a)))
+print(top_n(count_freq(b)))
+```
+
+![count_freq + top_n](./images/lab03/1.3-4_count_freq.png)
+
+## Задание 2
+
+### Задание B
+
+```python
+import sys
+import re
+
+def normalize(text: str, *, casefold: bool = True, yo2e: bool = True) -> str:
+    if yo2e:
+        text = text.replace('ё', 'е').replace('Ё', 'Е')
+    if casefold:
+        text = text.casefold()
+    text = ' '.join(text.split())
+    text = text.strip()
+    return text
+
+def tokenize(text: str) -> list[str]:
+    t = r'[\w]+(?:-[\w]+)*'
+    l = re.findall(t, text, re.UNICODE)
+    return l
+
+def count_freq(tokens: list[str]) -> dict[str, int]:
+    freq = {}
+    for i in tokens:
+        if i in freq:
+            freq[i] += 1
+        else:
+            freq[i] = 1
+    return freq
+
+def top_n(freq: dict[str, int], n: int = 5) -> list[tuple[str, int]]:
+    items = []
+    for word in freq:
+        count = freq[word]
+        items.append((word, count))
+    items.sort(key=lambda i: (-i[1], i[0]))
+    return items[:n]
+
+a =  "Привет, мир! Привет!!!"
+
+nt = normalize(a)
+allwords = tokenize(nt)
+uw = count_freq(allwords)
+top = top_n(uw, 5)
+
+print(f'Всего слов: {len(allwords)}')
+print(f"Уникальных слов: {len(uw)}")
+print("Топ-5:")
+for y in top:
+    print(y[0] + ': ' + str(y[1]))
+```
+
+![Задание B.1](./images/lab03/2.1.1_text_stats.png)
+![Задание B.2](./images/lab03/2.1.2_text_stats.png)

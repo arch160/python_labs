@@ -473,8 +473,6 @@ top_5 = top_n(frequencies, n=5)
 for i, (word, count) in enumerate(top_5, 1):
     print(f"  {i}. '{word}': {count}") if top_5 else print("  Нет слов")
 ```
-
-
 ## Тест кейсы к заданию А:
 ![1](./images/lab04/1.png)
 ![2](./images/lab04/2.png)

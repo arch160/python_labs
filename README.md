@@ -311,3 +311,130 @@ for y in top:
 
 ![Задание B.1](./images/lab03/2.1.1_text_stats.png)
 ![Задание B.2](./images/lab03/2.1.2_text_stats.png)
+
+
+# Лабораторная работа № 4
+
+## Функции, файл io_txt_csv.py: 
+```python
+from pathlib import Path
+import csv
+import re
+
+def normalize(text: str, *, casefold: bool = True, yo2e: bool = True) -> str:
+    """Нормализует текст: приводит к нижнему регистру, заменяет ё на е, убирает лишние пробелы"""
+    if yo2e:
+        text = text.replace('ё', 'е').replace('Ё', 'Е')
+    if casefold:
+        text = text.casefold()
+    text = ' '.join(text.split())
+    text = text.strip()
+    return text
+
+def tokenize(text: str) -> list[str]:
+    """Разбивает текст на токены (слова)"""
+    t = r'[\w]+(?:-[\w]+)*'
+    l = re.findall(t, text, re.UNICODE)
+    return l
+
+def count_freq(tokens: list[str]) -> dict[str, int]:
+    """Подсчитывает частоту каждого токена"""
+    freq = {}
+    for i in tokens:
+        if i in freq:
+            freq[i] += 1
+        else:
+            freq[i] = 1
+    return freq
+
+def top_n(freq: dict[str, int], n: int = 5) -> list[tuple[str, int]]:
+    """Возвращает топ-N самых частых токенов"""
+    items = []
+    for word in freq:
+        count = freq[word]
+        items.append((word, count))
+    items.sort(key=lambda i: (-i[1], i[0]))
+    return items[:n]
+
+def read_text(path: str | Path, encoding: str = "utf-8") -> str:
+    """Читает текст из файла"""
+    print(f"Читаю файл: {path}")
+    p = Path(path)
+    text = p.read_text(encoding=encoding)
+    print(f"Прочитал {len(text)} символов")
+    return text
+
+def write_csv(rows: list[tuple | list], path: str | Path,
+                header: tuple[str, ...] | None = None) -> None:
+    """Записывает данные в CSV файл"""
+    p = Path(path)
+
+    if rows:
+        first_length = len(rows[0])
+        for i, row in enumerate(rows):
+            if len(row) != first_length:
+                raise ValueError(f"ошибка лютая")
+            
+    with p.open('w', newline='', encoding='utf-8') as f:
+        writer = csv.writer(f)
+
+        if header is not None:
+            writer.writerow(header)
+
+        for row in rows:
+            writer.writerow(row)
+```
+
+## Задание А
+```python
+from pathlib import Path
+import sys
+
+current_dir = Path(__file__).parent
+sys.path.append(str(current_dir))
+
+from io_txt_csv import normalize, tokenize, count_freq, top_n, read_text, write_csv
+
+def main():
+    current_file = Path(__file__)
+    print(f"Текущий файл: {current_file}")
+
+    input_path = current_file.parent / 'data' / 'input.txt'
+    output_path = current_file.parent / 'data' / 'output.csv'
+
+    print(f"Путь к входному файлу: {input_path}")
+    print(f"Путь к выходному файлу: {output_path}")
+
+    input_path.parent.mkdir(parents=True, exist_ok=True)
+    input_path.write_text("Привет, мир! Привет!!!", encoding='utf-8')
+    print(f"Создан/обновлен файл: {input_path}")
+
+    result = read_text(input_path)
+    print(f"Результат чтения: {result}")
+
+    normalized_text = normalize(result)
+    print(f"Нормализованный текст: {normalized_text}")
+
+    tokens = tokenize(normalized_text)
+    print(f"Токены: {tokens}")
+
+    frequencies = count_freq(tokens)
+    print(f"Частоты: {frequencies}")
+
+    word_counts = top_n(frequencies, n=len(frequencies))
+    print(f"Подсчет слов: {word_counts}")
+
+    write_csv(word_counts, output_path, header=('word', 'count'))
+    print(f"CSV файл создан: {output_path}")
+
+if __name__ == "__main__":
+    main()
+```
+## Тест кейсы к заданию А:
+![1](./images/lab04/1.png)
+![2](./images/lab04/2.png)
+
+## Тест кейсы к заданию B
+![3](./images/lab04/3.png)
+![4](./images/lab04/4.png)
+![5](./images/lab04/5.png)

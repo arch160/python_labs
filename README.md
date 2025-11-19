@@ -481,3 +481,135 @@ for i, (word, count) in enumerate(top_5, 1):
 ![3](./images/lab04/3.png)
 ![4](./images/lab04/4.png)
 ![5](./images/lab04/5.png)
+
+
+# Лабораторная работа № 5
+
+## Сsv to json
+```python
+import json
+import csv
+from pathlib import Path
+import sys
+
+current_file = Path(__file__)
+print(f"Текущий файл: {current_file}")
+
+parent_dir = current_file.parent.parent
+sys.path.append(str(parent_dir))
+
+
+def csv_to_json(csv_path: str, json_path: str) -> None:
+    encoding = 'utf-8'
+    input_path = Path(csv_path)
+    output_path = Path(json_path)
+    
+    if not input_path.exists():
+        raise FileNotFoundError('Пожалуйста, проверьте путь к файлу')
+    if input_path.suffix.lower() != '.csv':
+        raise ValueError('Проверьте расширение файла')
+    
+    data = []
+    with open(input_path, 'r', encoding=encoding, newline='') as csv_file:
+        csv_reader = csv.DictReader(csv_file)
+        for row in csv_reader:
+            data.append(row)
+    
+    with open(output_path, 'w', encoding=encoding, newline='') as json_file:
+        json.dump(data, json_file, ensure_ascii=False, indent=2)
+        print('Конвертация прошла успешно')
+        print(f'Всего записей конвертировано: {len(data)}')
+
+
+csv_to_json('src/data/file1.csv', 'src/data/file1.json')
+```
+
+### Csv: 
+![1](./images/lab05/file11.png)
+### Полученный json:
+![2](./images/lab05/file12%20(2).png)
+
+
+## Json to csv
+```python
+import json
+import csv
+from pathlib import Path
+import sys
+
+current_file = Path(__file__)
+print(f"Текущий файл: {current_file}")
+
+parent_dir = current_file.parent.parent
+sys.path.append(str(parent_dir))
+
+
+def json_to_csv(json_path: str | Path, csv_path: str | Path, encoding: str = "utf-8") -> None:
+    input_path = Path(json_path)
+    output_path = Path(csv_path)
+    
+    if not input_path.exists():
+        raise FileNotFoundError(f"JSON файл не найден: {json_path}")
+    
+    with open(input_path, 'r', encoding=encoding) as json_file:
+        data = json.load(json_file)
+    
+    with open(output_path, 'w', newline='', encoding=encoding) as csv_file:
+        writer = csv.DictWriter(csv_file, fieldnames=['name', 'age', 'city'])
+        writer.writeheader()
+        writer.writerows(data)
+    
+    print(f'Конвертировано {len(data)} записей')
+
+
+json_to_csv('src/data/file2.json', 'src/data/file2.csv')
+```
+### Json:
+![3](./images/lab05/file21.png)
+### Полученный csv:
+![4](./images/lab05/file22.png)
+
+
+## Csv to xlsx
+```python 
+import csv
+from openpyxl import Workbook
+from pathlib import Path
+import sys
+
+current_file = Path(__file__)
+print(f"Текущий файл: {current_file}")
+
+parent_dir = current_file.parent.parent
+sys.path.append(str(parent_dir))
+
+
+def csv_to_xlsx(csv_path: str | Path, xlsx_path: str | Path, encoding: str = "utf-8") -> None:
+    csv_file = Path(csv_path)
+    xlsx_file = Path(xlsx_path)
+    
+    if not csv_file.exists():
+        raise FileNotFoundError(f"CSV файл не найден: {csv_path}")
+    
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.title = "Data"
+    
+    with open(csv_file, 'r', encoding=encoding, newline='') as csv_open:
+        csv_reader = csv.reader(csv_open)
+        
+        for row_index, row in enumerate(csv_reader, 1):
+            for col_index, value in enumerate(row, 1):
+                worksheet.cell(row=row_index, column=col_index, value=value)
+    
+    workbook.save(xlsx_file)
+    print(f"Успешно сконвертировано: {csv_path} -> {xlsx_path}")
+
+
+csv_to_xlsx('src/data/file3.csv', 'src/data/file3.xlsx')
+```
+
+### Csv:
+![5](./images/lab05/file31.png)
+### Полученный xlsx:
+![6](./images/lab05/file32.png)

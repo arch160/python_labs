@@ -4,7 +4,6 @@ from pathlib import Path
 import sys
 
 current_file = Path(__file__)
-print(f"Текущий файл: {current_file}")
 
 parent_dir = current_file.parent.parent
 sys.path.append(str(parent_dir))
@@ -17,7 +16,7 @@ def json_to_csv(json_path: str | Path, csv_path: str | Path, encoding: str = "ut
     if not input_path.exists():
         raise FileNotFoundError(f"JSON файл не найден: {json_path}")
     
-    with open(input_path, 'r', encoding=encoding) as json_file:
+    with open(input_path, 'r', encoding='utf-8-sig') as json_file:
         data = json.load(json_file)
     
     with open(output_path, 'w', newline='', encoding=encoding) as csv_file:
@@ -28,4 +27,5 @@ def json_to_csv(json_path: str | Path, csv_path: str | Path, encoding: str = "ut
     print(f'Конвертировано {len(data)} записей')
 
 
-json_to_csv('src/data/file2.json', 'src/data/file2.csv')
+if __name__ == '__main__':
+    json_to_csv('src/data/file2.json', 'src/data/file2.csv')

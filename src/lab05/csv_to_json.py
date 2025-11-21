@@ -4,7 +4,6 @@ from pathlib import Path
 import sys
 
 current_file = Path(__file__)
-print(f"Текущий файл: {current_file}")
 
 parent_dir = current_file.parent.parent
 sys.path.append(str(parent_dir))
@@ -32,4 +31,5 @@ def csv_to_json(csv_path: str, json_path: str) -> None:
         print(f'Всего записей конвертировано: {len(data)}')
 
 
-csv_to_json('src/data/file1.csv', 'src/data/file1.json')
+if __name__ == '__main__':
+    csv_to_json('src/data/file1.csv', 'src/data/file1.json')

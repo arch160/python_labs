@@ -4,7 +4,6 @@ from pathlib import Path
 import sys
 
 current_file = Path(__file__)
-print(f"Текущий файл: {current_file}")
 
 parent_dir = current_file.parent.parent
 sys.path.append(str(parent_dir))
@@ -32,4 +31,5 @@ def csv_to_xlsx(csv_path: str | Path, xlsx_path: str | Path, encoding: str = "ut
     print(f"Успешно сконвертировано: {csv_path} -> {xlsx_path}")
 
 
-csv_to_xlsx('src/data/file3.csv', 'src/data/file3.xlsx')
+if __name__ == '__main__':
+    csv_to_xlsx('src/data/file3.csv', 'src/data/file3.xlsx')

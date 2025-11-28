@@ -78,7 +78,8 @@ def test_top_n_tie_breaker():
     assert result == expected
 
 ```
-### pytest
+
+### Pytest:
 ![1](../../images/lab07/1.png)
 
 ## test_json_csv
@@ -188,4 +189,6 @@ def test_csv_to_json_malformed_csv(tmp_path: Path):
     with output_json.open(encoding="utf-8") as f:
         data = json.load(f)
 ```
+
+### Pytest:
 ![2](../../images/lab07/2.png)

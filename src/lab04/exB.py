@@ -26,8 +26,11 @@ print(f"Токены: {tokens}")
 print(f"Частоты: {frequencies}")
 
 word_counts = top_n(frequencies, n=len(frequencies))
-write_csv([[word, count] for word, count in word_counts], 
-          output_path, header=('word', 'count'))
+write_csv(
+    [[word, count] for word, count in word_counts],
+    output_path,
+    header=("word", "count"),
+)
 print(f"CSV создан: {output_path}")
 
 print(f"Всего слов: {sum(frequencies.values())}")

@@ -1,7 +1,9 @@
 def min_max(nums: list[float | int]) -> tuple[float | int, float | int]:
     if not nums:
-        return 'ValueError'
+        return "ValueError"
     return (min(nums), max(nums))
+
+
 t = [3, -1, 5, 5, 0]
 m = [42]
 n = [-5, -2, -9]

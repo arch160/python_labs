@@ -6,18 +6,19 @@ sys.path.append(str(current_dir))
 
 from io_txt_csv import normalize, tokenize, count_freq, top_n, read_text, write_csv
 
+
 def main():
     current_file = Path(__file__)
     print(f"Текущий файл: {current_file}")
 
-    input_path = current_file.parent / 'data' / 'input.txt'
-    output_path = current_file.parent / 'data' / 'output.csv'
+    input_path = current_file.parent / "data" / "input.txt"
+    output_path = current_file.parent / "data" / "output.csv"
 
     print(f"Путь к входному файлу: {input_path}")
     print(f"Путь к выходному файлу: {output_path}")
 
     input_path.parent.mkdir(parents=True, exist_ok=True)
-    input_path.write_text("Привет, мир! Привет!!!", encoding='utf-8')
+    input_path.write_text("Привет, мир! Привет!!!", encoding="utf-8")
     print(f"Создан/обновлен файл: {input_path}")
 
     result = read_text(input_path)
@@ -35,8 +36,9 @@ def main():
     word_counts = top_n(frequencies, n=len(frequencies))
     print(f"Подсчет слов: {word_counts}")
 
-    write_csv(word_counts, output_path, header=('word', 'count'))
+    write_csv(word_counts, output_path, header=("word", "count"))
     print(f"CSV файл создан: {output_path}")
+
 
 if __name__ == "__main__":
     main()

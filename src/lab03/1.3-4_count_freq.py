@@ -7,6 +7,7 @@ def count_freq(tokens: list[str]) -> dict[str, int]:
             freq[i] = 1
     return freq
 
+
 def top_n(freq: dict[str, int], n: int = 5) -> list[tuple[str, int]]:
     items = []
     for word in freq:
@@ -16,8 +17,8 @@ def top_n(freq: dict[str, int], n: int = 5) -> list[tuple[str, int]]:
     return items[:n]
 
 
-a = ["a","b","a","c","b","a"]
-b = ["bb","aa","bb","aa","cc"]
+a = ["a", "b", "a", "c", "b", "a"]
+b = ["bb", "aa", "bb", "aa", "cc"]
 print(count_freq(a))
 print(count_freq(b))
 print(top_n(count_freq(a)))

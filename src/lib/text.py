@@ -7,6 +7,7 @@ import re
 import sys
 from pathlib import Path
 
+
 def read_text(path: str | Path, encoding: str = "utf-8") -> str:
     print(f"Читаю файл: {path}")
     p = Path(path)
@@ -14,19 +15,20 @@ def read_text(path: str | Path, encoding: str = "utf-8") -> str:
     print(f"Прочитал {len(text)} символов")
     return text
 
+
 def frequencies_from_text(text):
     """
     Анализирует текст и возвращает частоты слов
-    
+
     Args:
         text (str): Входной текст
-        
+
     Returns:
         dict: Словарь {слово: частота}
     """
     # Очищаем текст и разбиваем на слова
     words = text.lower().split()
-    
+
     # Подсчитываем частоты
     return Counter(words)
 
@@ -34,26 +36,28 @@ def frequencies_from_text(text):
 def sorted_word_counts(freqs):
     """
     Сортирует слова по частоте (по убыванию)
-    
+
     Args:
         freqs (dict): Словарь частот
-        
+
     Returns:
         list: Список кортежей [(слово, частота), ...]
     """
     return sorted(freqs.items(), key=lambda x: x[1], reverse=True)
 
+
 def normalize(text: str, *, casefold: bool = True, yo2e: bool = True) -> str:
     if yo2e:
-        text = text.replace('ё', 'е').replace('Ё', 'Е')
+        text = text.replace("ё", "е").replace("Ё", "Е")
     if casefold:
         text = text.casefold()
-    text = ' '.join(text.split())
+    text = " ".join(text.split())
     text = text.strip()
     return text
 
+
 def tokenize(text: str) -> list[str]:
-    t = r'[\w]+(?:-[\w]+)*'
+    t = r"[\w]+(?:-[\w]+)*"
     l = re.findall(t, text, re.UNICODE)
     return l
 
@@ -66,6 +70,7 @@ def count_freq(tokens: list[str]) -> dict[str, int]:
         else:
             freq[i] = 1
     return freq
+
 
 def top_n(freq: dict[str, int], n: int = 5) -> list[tuple[str, int]]:
     items = []

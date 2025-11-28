@@ -1,9 +1,11 @@
 import re
 
+
 def tokenize(text: str) -> list[str]:
-    t = r'[\w]+(?:-[\w]+)*'
+    t = r"[\w]+(?:-[\w]+)*"
     l = re.findall(t, text, re.UNICODE)
     return l
+
 
 a = "привет мир"
 b = "hello,world!!!"

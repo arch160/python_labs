@@ -1,11 +1,11 @@
 def format_record(rec: tuple[str, str, float]) -> str:
     try:
         fio, gr, gpa = rec
-        fio2 = ' '.join(fio.split()).split()
+        fio2 = " ".join(fio.split()).split()
         fam = fio2[0]
 
         if (fio not in rec) or (gr not in rec) or (gpa not in rec):
-            return 'ValueError'
+            return "ValueError"
 
         ini = []
         for i in range(1, len(fio2)):
@@ -14,7 +14,9 @@ def format_record(rec: tuple[str, str, float]) -> str:
         res = f"{fam} {''.join(ini)}, гр. {gr}, GPA {gpa:.2f}"
         return res
     except:
-       return 'ValueError'
+        return "ValueError"
+
+
 t = ("Иванов Иван Иванович", "BIVT-25", 4.6)
 a = ("Петров Пётр", "IKBO-12", 5.0)
 b = ("Петров Пётр Петрович", "IKBO-12", 5.0)

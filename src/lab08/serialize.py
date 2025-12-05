@@ -21,15 +21,10 @@ def students_from_json(path: str | Path) -> List[Student]:
     
     return [Student.from_dict(item) for item in data]
 
-
 if __name__ == "__main__":
-
-    input_file = Path(__file__).parent.parent.parent / "data" / "lab08" / "students_input.json"
-    output_file = Path(__file__).parent.parent.parent / "data" / "lab08" / "students_output.json"
+    students_input = students_from_json("data/lab08/students_input.json")
     
-    students = students_from_json(input_file)
-    
-    for student in students:
+    for student in students_input:
         print(student)
     
-    students_to_json(students, output_file)
+    students_to_json(students_input, "data/lab08/students_output.json")

@@ -8,7 +8,7 @@ GPA_MAX = 5
 @dataclass
 class Student:
     fio: str
-    birthdate: str
+    birthdate: str  # хранится как строка "2003-10-10"
     group: str
     gpa: float
 
@@ -31,6 +31,7 @@ class Student:
         return gpa_value
     
     def __post_init__(self) -> None:
+        # ИСПРАВЛЕНО: используем self.birthdate
         self._birthdate_dt = Student._validate_birthdate(self.birthdate)
         self.gpa = Student._validate_gpa(self.gpa)
 
@@ -46,7 +47,7 @@ class Student:
             "fio": self.fio,
             "birthdate": self.birthdate,
             "group": self.group,
-            "gpa": self.gpa,
+            "gpa": self.gpa
         }
 
     @classmethod

@@ -1102,3 +1102,184 @@ if __name__ == "__main__":
 
 ## Вывод:
 ![2](./images/lab08/2.png)
+
+# Лабораторная работа № 9
+
+## group
+```python
+import csv
+from pathlib import Path
+from typing import List
+from src.lab08.models import Student
+
+class Group:
+    def __init__(self, storage_path: str):
+        self.path = Path(storage_path)
+        if not self.path.exists():
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+            with open(self.path, 'w', newline='', encoding='utf-8') as f:
+                f.write("fio,birthdate,group,gpa\n")
+    
+    def _read_all(self):
+        if not self.path.exists():
+            return []
+        with open(self.path, 'r', newline='', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            return list(reader)
+    
+    def _write_all(self, rows):
+        with open(self.path, 'w', newline='', encoding='utf-8') as f:
+            writer = csv.DictWriter(f, fieldnames=["fio", "birthdate", "group", "gpa"])
+            writer.writeheader()
+            writer.writerows(rows)
+    
+    def list(self):
+        rows = self._read_all()
+        students = []
+        for row in rows:
+            try:
+                student = Student.from_dict(row)
+                students.append(student)
+            except:
+                continue
+        return students
+    
+    def add(self, student: Student):
+        rows = self._read_all()
+        
+        student_dict = student.to_dict()
+        for row in rows:
+            if (row['fio'] == student_dict['fio'] and
+                row['birthdate'] == student_dict['birthdate'] and
+                row['group'] == student_dict['group'] and
+                float(row['gpa']) == float(student_dict['gpa'])):
+                raise ValueError(f"Такой студент уже существует: {student.fio}")
+        
+        rows.append(student_dict)
+        self._write_all(rows)
+    
+    def find(self, substr: str):
+        rows = self._read_all()
+        found = [row for row in rows if substr.lower() in row['fio'].lower()]
+        students = []
+        for row in found:
+            try:
+                student = Student.from_dict(row)
+                students.append(student)
+            except:
+                continue
+        return students
+    
+    def remove(self, fio: str):
+        rows = self._read_all()
+        new_rows = [row for row in rows if row['fio'] != fio]
+        if len(new_rows) < len(rows):
+            self._write_all(new_rows)
+            return True
+        return False
+    
+    def update(self, fio: str, **fields):
+        rows = self._read_all()
+        updated = False
+        
+        for i, row in enumerate(rows):
+            if row['fio'] == fio:
+                updated = True
+                
+                temp_row = row.copy()
+                for key, value in fields.items():
+                    if key in ["fio", "birthdate", "group", "gpa"]:
+                        if key == 'gpa':
+                            value = str(float(value))
+                        temp_row[key] = str(value)
+                
+                for j, other_row in enumerate(rows):
+                    if i != j:
+                        if (temp_row['fio'] == other_row['fio'] and
+                            temp_row['birthdate'] == other_row['birthdate'] and
+                            temp_row['group'] == other_row['group'] and
+                            float(temp_row['gpa']) == float(other_row['gpa'])):
+                            raise ValueError(f"После обновления будет дубликат студента: {temp_row['fio']}")
+                
+                for key, value in fields.items():
+                    if key in ["fio", "birthdate", "group", "gpa"]:
+                        if key == 'gpa':
+                            value = str(float(value))
+                        rows[i][key] = str(value)
+        
+        if not updated:
+            raise ValueError(f"Студент {fio} не найден")
+        
+        self._write_all(rows)
+```
+
+## Проверяем все методы через терминал:
+```python
+python -c "
+from src.lab08.models import Student
+from src.lab09 import Group
+
+print('ЛР9: ТЕСТ')
+print('='*30)
+
+g = Group('data/lab09/students.csv')
+
+# Тест 1: LIST
+print('****LIST:')
+[print(f'{s.fio}, {s.birthdate}, {s.group}, {s.gpa}') for s in g.list()]
+
+# Тест 2: ADD
+print('****ADD:')
+g.add(Student('Иван','2000-01-01','БИВТ-34',5))
+print('Добавлен')
+[print(f'{s.fio}, {s.birthdate}, {s.group}, {s.gpa}') for s in g.list()]
+
+# Тест 3: FIND
+print('****FIND:')
+print(f'FIND: {g.find('петрова')}')
+
+# Тест 4: UPDATE
+print('****UPDATE:')
+g.update('Сидоров Алексей',gpa=4.8); print('UPDATE: GPA обновлен')
+[print(f'{s.fio}, {s.birthdate}, {s.group}, {s.gpa}') for s in g.list()]
+
+# Тест 5: REMOVE
+print('****REMOVE:')
+g.remove('Иван'); print('REMOVE: студент удален')
+[print(f'{s.fio}, {s.birthdate}, {s.group}, {s.gpa}') for s in g.list()]
+
+print('='*30)
+print('ВСЕ МЕТОДЫ РАБОТАЮТ КОРРЕКТНО')
+"
+```
+![0](./images/lab09/0.png)
+
+## Запускаем метод LIST:
+```python
+python -c "from src.lab09 import Group; g=Group('data/lab09/students.csv'); print('LIST:'); [print(f'{s.fio}, {s.birthdate}, {s.group}, {s.gpa}') for s in g.list()]"
+```
+![2](./images/lab09/11.png)
+
+## Запускаем метод ADD:
+```python
+python -c "from src.lab08.models import Student; from src.lab09 import Group; g=Group('data/lab09/students.csv'); g.add(Student('Иван','2000-01-01','БИВТ-34',5)); print('Добавлен'); [print(f'{s.fio}, {s.birthdate}, {s.group}, {s.gpa}') for s in g.list()]"
+```
+![22](./images/lab09/22.png)
+
+## Запускаем метод FIND:
+```python
+python -c "from src.lab09 import Group; g=Group('data/lab09/students.csv'); print(f'FIND: {g.find('петрова')}')" 
+```
+![4](./images/lab09/4.png)
+
+## Запускаем метод UPDATE:
+```python
+python -c "from src.lab09 import Group; g=Group('data/lab09/students.csv'); g.update('Сидоров Алексей',gpa=4.8); print('UPDATE: GPA обновлен'); [print(f'{s.fio}, {s.birthdate}, {s.group}, {s.gpa}') for s in g.list()]"
+```
+![5](./images/lab09/5.png)
+
+## Запускаем метод REMOVE:
+```python
+python -c "from src.lab09 import Group; g=Group('data/lab09/students.csv'); g.remove('Иван'); print('REMOVE: студент удален'); [print(f'{s.fio}, {s.birthdate}, {s.group}, {s.gpa}') for s in g.list()]"
+```
+![6](./images/lab09/6.png)

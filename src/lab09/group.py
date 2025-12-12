@@ -37,10 +37,16 @@ class Group:
     
     def add(self, student: Student):
         rows = self._read_all()
+        
+        student_dict = student.to_dict()
         for row in rows:
-            if row['fio'] == student.fio:
-                raise ValueError(f"Студент {student.fio} уже существует")
-        rows.append(student.to_dict())
+            if (row['fio'] == student_dict['fio'] and
+                row['birthdate'] == student_dict['birthdate'] and
+                row['group'] == student_dict['group'] and
+                float(row['gpa']) == float(student_dict['gpa'])):
+                raise ValueError(f"Такой студент уже существует: {student.fio}")
+        
+        rows.append(student_dict)
         self._write_all(rows)
     
     def find(self, substr: str):
@@ -66,20 +72,33 @@ class Group:
     def update(self, fio: str, **fields):
         rows = self._read_all()
         updated = False
+        
         for i, row in enumerate(rows):
             if row['fio'] == fio:
                 updated = True
+                
+                temp_row = row.copy()
+                for key, value in fields.items():
+                    if key in ["fio", "birthdate", "group", "gpa"]:
+                        if key == 'gpa':
+                            value = str(float(value))
+                        temp_row[key] = str(value)
+                
+                for j, other_row in enumerate(rows):
+                    if i != j:
+                        if (temp_row['fio'] == other_row['fio'] and
+                            temp_row['birthdate'] == other_row['birthdate'] and
+                            temp_row['group'] == other_row['group'] and
+                            float(temp_row['gpa']) == float(other_row['gpa'])):
+                            raise ValueError(f"После обновления будет дубликат студента: {temp_row['fio']}")
+                
                 for key, value in fields.items():
                     if key in ["fio", "birthdate", "group", "gpa"]:
                         if key == 'gpa':
                             value = str(float(value))
                         rows[i][key] = str(value)
-                if 'fio' in fields and fields['fio'] != fio:
-                    new_fio = fields['fio']
-                    for j, other in enumerate(rows):
-                        if i != j and other['fio'] == new_fio:
-                            raise ValueError(f"Студент {new_fio} уже существует")
-                break
+        
         if not updated:
             raise ValueError(f"Студент {fio} не найден")
+        
         self._write_all(rows)
